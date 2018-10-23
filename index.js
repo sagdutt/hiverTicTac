@@ -74,10 +74,91 @@ function renderMainGrid() {
 function onBoxClick() {
     var rowIdx = this.getAttribute("rowIdx");
     var colIdx = this.getAttribute("colIdx");
-    let newValue = 1;
-    grid[colIdx][rowIdx] = newValue;
-    renderMainGrid();
-    addClickHandlers();
+    if(grid[colIdx][rowIdx] === 0){
+        let newValue = 1;
+        grid[colIdx][rowIdx] = newValue;
+        renderMainGrid();
+        let result = checkWin(colIdx, rowIdx, 1);
+        if(result === 0){
+            displayBanner("Computer's Turn");
+            setTimeout(computerTurn, 1000);
+        }else{
+            showWinMessage(result);
+        }
+    }
+}
+
+function computerTurn(){
+    for(let i = 0; i<GRID_LENGTH; i++){
+        for(let j = 0; j<GRID_LENGTH; j++){
+            if(grid[i][j] == 0){
+                grid[i][j] = 2;
+                renderMainGrid();
+                let result = checkWin(i, j, 2);
+                if(result === 0){
+                    displayBanner("Your Turn");
+                    addClickHandlers();
+                }else{
+                    showWinMessage(result);
+                }
+                return;
+            }
+        }
+    }
+}
+
+function displayBanner(message){
+    document.getElementById("message").innerHTML = message;
+}
+
+function showWinMessage(result){
+    let banner = document.getElementById("message");
+    if(result === 1){
+        banner.innerHTML = "You won! :)";
+    }else if(result === 2){
+        banner.innerHTML = "You've lost.. :(";
+    }
+    banner.classList.add('end-game');
+}
+
+function checkWin(x, y, val){
+    let rowCheck = true;
+    let colCheck = true;
+    let diagCheck = true;
+    let oppDiagCheck = true;
+    for(let i=0; i<GRID_LENGTH; i++){
+        if(grid[x][i] !== val){
+            rowCheck = false;
+            break;
+        }            
+    }
+
+    for(let i=0; i<GRID_LENGTH; i++){
+        if(grid[i][y] !== val){
+            colCheck = false;
+            break;
+        }            
+    }
+
+    for(let i=0; i<GRID_LENGTH; i++){
+        if(grid[i][i] !== val){
+            diagCheck = false;
+            break;
+        } 
+    }
+
+    for(let i=0; i<GRID_LENGTH; i++){
+        if(grid[i][GRID_LENGTH-1-i] !== val){
+            oppDiagCheck = false;
+            break;
+        } 
+    }
+
+    if(rowCheck || colCheck || diagCheck || oppDiagCheck){
+        return val;
+    }
+
+    return 0;
 }
 
 function addClickHandlers() {
@@ -86,6 +167,8 @@ function addClickHandlers() {
         boxes[idx].addEventListener('click', onBoxClick, false);
     }
 }
+
+
 
 initializeGrid();
 renderMainGrid();

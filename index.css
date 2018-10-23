@@ -50,3 +50,14 @@
     border-radius: 5px;
     line-height: 100px;
 }
+
+#message{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #798;
+}
+
+.end-game{
+    font-size: 2rem;
+}
